@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 import boto3
 from web3 import Web3
+import threading
+import time
 
 app = Flask(__name__)
 # mydatabase message,aws_access_key_id and aws_secret_access_key is my database key, please don't change it
@@ -11,7 +13,7 @@ table = dynamodb.Table('Users')
 # https://sepolia.infura.io/v3/9a4b375633ea4a87a4e7478223ae27fa is a URL that points to an Infura Ethereum node.
 web3 = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/9a4b375633ea4a87a4e7478223ae27fa'))
 # the contract address and contract abi
-contract_address = '0x3F2d999752A549C2Bf13f56452B54C8FbBa6FA53'
+contract_address = '0x550cdDd971Eddb72ad2ac562CAE212e0e50E6F67'
 contract_abi = [
 	{
 		"inputs": [
@@ -143,7 +145,7 @@ def add_user(address, name):
     private_key = "6dc81a8bca9fbdafa6369359b20f9840cf82557d3f016a350ba80e8c7ab3637d"
 
     # Get the nonce
-    nonce = web3.eth.get_transaction_count('0x5b9F7F1672000a655748645D8299B0AAab357d45', 'pending')
+    nonce = web3.eth.get_transaction_count('0x56e36E7Ed1d66e67c24917Aa9B1527f75D1b9d71', 'pending')
 
     # Build a transaction that invokes this contract's function `addUser`
     txn_dict = {
@@ -176,12 +178,34 @@ def add_user(address, name):
     else:
         return jsonify({'error': 'Transaction failed'}), 500
 
+def handle_event(event):
+    data = event['data'].hex()
+    user_address = '0x' + data[26:66]
+    name_length = int(data[66:130], 16) * 2
+    name = bytes.fromhex(data[130:130 + name_length]).decode()
+    table.put_item(Item={'userAddress': user_address, 'name': name})
 
 
+def log_loop(event_filter, poll_interval):
+    while True:
+        for event in event_filter.get_new_entries():
+            handle_event(event)
+        time.sleep(poll_interval)
+
+def start_listening():
+	event_signature_hash = web3.keccak(text="UserAdded(address,string)").hex()
+	event_filter = web3.eth.filter({
+		"address": contract_address,
+		"topics": [event_signature_hash],
+		"fromBlock": "latest"
+	})
+	log_loop(event_filter, 2)
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    listener = threading.Thread(target=start_listening)
+    listener.start()
 
+    app.run(debug=True)
 
