@@ -1,6 +1,6 @@
 # BlockChain Decentraliszed Currency ExchangeApplication：DEX
 
-#Demo 1 User Registration
+# Demo 1 User Registration
 
 The backend is a simple Python web server that uses the Flask framework to interact with an Ethereum smart contract and a DynamoDB database. 
 
@@ -17,7 +17,7 @@ The application requires the following software and libraries:
 8. An AWS Account with DynamoDB and the necessary access credentials
 9. Access to an Ethereum node. This program uses the Goerli test network.
 
-##Installation Instructions
+## Installation Instructions
 
 In the backend,before running the program, you must first install all the required libraries. You can do this with the following command:
 ```
@@ -38,7 +38,7 @@ You can test these routes by replacing <address> and <name> with a valid Ethereu
 Please ensure to change the Ethereum account and private key information with your own account's information. Also, replace the DynamoDB keys and region with your own information before running the application.
 
 
-#Demo 2 Token Swap
+# Demo 2 Token Swap
 
 This contract interfaces with the Uniswap v3 swap router to execute single asset swaps between Link and WETH tokens.
 
@@ -48,7 +48,7 @@ The application requires the following software and libraries:
 1.Solidity version ^0.7.6
 2. An Ethereum wallet Metamask 
 
-##Functions
+## Functions
 
 getLinkBalance(address): Returns the balance of Link tokens for a specified address.
 getWethBalance(address): Returns the balance of WETH tokens for a specified address.
