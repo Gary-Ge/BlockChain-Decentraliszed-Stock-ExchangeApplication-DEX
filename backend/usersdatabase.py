@@ -10,122 +10,77 @@ dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-2',aws_access_ke
     aws_secret_access_key='2M6x06JiIshkEteSWJSNTdSLjDOyv2e9enmgw/bt')
 table = dynamodb.Table('Users')
 #Use the HTTPProvider provider to specify the HTTP connection of the Ethereum node
-# https://sepolia.infura.io/v3/9a4b375633ea4a87a4e7478223ae27fa is a URL that points to an Infura Ethereum node.
-web3 = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/9a4b375633ea4a87a4e7478223ae27fa'))
+web3 = Web3(Web3.HTTPProvider('https://goerli.infura.io/v3/9a4b375633ea4a87a4e7478223ae27fa'))
 # the contract address and contract abi
-contract_address = '0x550cdDd971Eddb72ad2ac562CAE212e0e50E6F67'
-contract_abi = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			}
-		],
-		"name": "addUser",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": False,
-		"inputs": [
-			{
-				"indexed": False,
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"indexed": False,
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			}
-		],
-		"name": "UserAdded",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "getContractAddress",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "manager",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "numUsers",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "users",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "WalletBalance",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
+contract_address = '0xDdee5f4eB11EDe5c32E01CC7DF2c9fE31AFa496A'
+contract_abi =[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "recipient",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
 ]
 contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
@@ -141,20 +96,20 @@ def get_user(address):
 @app.route('/adduser/<address>/<name>')
 def add_user(address, name):
     # Your private key
-	# the metamask account and value, you can change it
-    private_key = "6dc81a8bca9fbdafa6369359b20f9840cf82557d3f016a350ba80e8c7ab3637d"
+    # the metamask account and value, you can change it
+    private_key = "d82181e66f7184759116f845832ccae2576db73c0f072a129f6d9e9578e79f8c"
 
     # Get the nonce
-    nonce = web3.eth.get_transaction_count('0x56e36E7Ed1d66e67c24917Aa9B1527f75D1b9d71', 'pending')
+    nonce = web3.eth.get_transaction_count('0x5b9F7F1672000a655748645D8299B0AAab357d45', 'pending')
 
     # Build a transaction that invokes this contract's function `addUser`
     txn_dict = {
         'to': contract_address,
         'value': 0,  # It is better to specify this even if not needed
         'gas':1000000,
-        'gasPrice':web3.to_wei('1', 'gwei'),
+        'gasPrice':web3.to_wei('10', 'gwei'),
         'nonce': nonce,
-        'chainId': 11155111,  # sepolia test net
+        'chainId': 5,  # sepolia test net
         'data': contract.encodeABI(fn_name="addUser", args=[address, name])
     }
 
@@ -193,13 +148,13 @@ def log_loop(event_filter, poll_interval):
         time.sleep(poll_interval)
 
 def start_listening():
-	event_signature_hash = web3.keccak(text="UserAdded(address,string)").hex()
-	event_filter = web3.eth.filter({
-		"address": contract_address,
-		"topics": [event_signature_hash],
-		"fromBlock": "latest"
-	})
-	log_loop(event_filter, 2)
+    event_signature_hash = web3.keccak(text="UserAdded(address,string)").hex()
+    event_filter = web3.eth.filter({
+        "address": contract_address,
+        "topics": [event_signature_hash],
+        "fromBlock": "latest"
+    })
+    log_loop(event_filter, 2)
 
 
 
@@ -208,4 +163,3 @@ if __name__ == '__main__':
     listener.start()
 
     app.run(debug=True)
-
