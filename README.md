@@ -9,7 +9,7 @@ The backend is a simple Python web server that uses the Flask framework to inter
 The application requires the following software and libraries:
 1. Solidity version ^0.7.6
 2. An Ethereum wallet Metamask 
-3.Ethereum RPC client Infura
+3. Ethereum RPC client Infura
 4. Python 3.8+
 5. Flask
 6. Boto3
@@ -26,9 +26,9 @@ pip install flask boto3 web3
 
 ## Running the Application
 
-1.After installing the required libraries, you can run the backend application. 
-2.Secondly,on solidity,please call the add_user function and input your User Address and Name,then these two information will be listened by flask and sent to the DynamoDB.
-3.In addition to the 1, 2 steps,you can also do registration through URL mapping.This application exposes two routes:
+1. After installing the required libraries, you can run the backend application. 
+2. Secondly,on solidity,please call the add_user function and input your User Address and Name,then these two information will be listened by flask and sent to the DynamoDB.
+3. In addition to the 1, 2 steps,you can also do registration through URL mapping.This application exposes two routes:
 http://127.0.0.1:5000/user/<address>. This route returns the user associated with a given Ethereum address.
 http://127.0.0.1:5000/adduser/<address>/<name>. This route adds a new user to the database with a specified Ethereum address and name.
 You can test these routes by replacing <address> and <name> with a valid Ethereum address and a user name respectively.
@@ -45,7 +45,7 @@ This contract interfaces with the Uniswap v3 swap router to execute single asset
 ## Prerequisites
 
 The application requires the following software and libraries:
-1.Solidity version ^0.7.6
+1. Solidity version ^0.7.6
 2. An Ethereum wallet Metamask 
 
 ## Functions
@@ -58,7 +58,7 @@ swapExactOutputSingleLinkToWeth(uint256, uint256): Executes a swap from Link to 
 swapExactOutputSingleWethToLink(uint256, uint256): Executes a swap from WETH to Link with an exact output amount.
 
 ## Running the Application
-1.Go to https://faucets.chain.link/goerli to get some LINK token
-2.Go to Matemask to transfer some LINK token to the SC for swap
-3.Call the swapExactInputSingleLinkToWeth to exchange Link to WETH,if the transaction is success, the WETH token will be sent to your wallet directly.
-4.Now you can repeat the previous steps to call other 3 functions.
+1. Go to https://faucets.chain.link/goerli to get some LINK token
+2. Go to Matemask to transfer some LINK token to the SC for swap
+3. Call the swapExactInputSingleLinkToWeth to exchange Link to WETH,if the transaction is success, the WETH token will be sent to your wallet directly.
+4. Now you can repeat the previous steps to call other 3 functions.
